@@ -1,0 +1,41 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.Base" />
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!--<item name="android:buttonStyle">@style/Button.Branded</item>-->
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="android:textColorHint">@color/textColorHint</item>
+
+        <!-- You can also set colorControlNormal, colorControlActivated
+             colorControlHighlight & colorSwitchThumbNormal. -->
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="buttonStyle">@style/AppTheme.Button</item>
+    </style>
+
+    <!-- Use this to globally theme all menu buttons -->
+    <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="AppTheme.ButtonDark" parent="AppTheme.Button">
+        <item name="colorButtonNormal">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/md_white_1000</item>
+    </style>
+</resources>
+

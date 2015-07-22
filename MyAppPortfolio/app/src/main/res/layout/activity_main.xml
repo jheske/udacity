@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="nanodegree.udacity.com.myappportfolio.MainActivity">
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/my_apps"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <LinearLayout
+        android:layout_width="325dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textTitle"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btnSpotify"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onClick"
+        android:text="@string/button_spotify"/>
+
+    <Button
+        android:id="@+id/btnScores"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onClick"
+        android:text="@string/button_scores"/>
+
+    <Button
+        android:id="@+id/btnLibrary"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onClick"
+        android:text="@string/button_library"/>
+
+    <Button
+        android:id="@+id/btnBuild"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onClick"
+        android:text="@string/button_build"/>
+
+    <Button
+        android:id="@+id/btnXyz"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:onClick="onClick"
+        android:text="@string/button_xyz"/>
+
+    <Button
+        android:id="@+id/btnCapstone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:theme="@style/AppTheme.ButtonDark"
+        android:text="@string/button_capstone"/>
+    </LinearLayout>
+
+</RelativeLayout>
