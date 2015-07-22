@@ -29,25 +29,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Show toast indicating which button was clicked
         switch (view.getId()) {
             case R.id.btnSpotify:
-                Utils.showToast(this, "This button will launch my Spotify app!");
+                Utils.showToast(this, getResources().getString(R.string.spotify_toast));
                 break;
             case R.id.btnScores:
-                Utils.showToast(this, "This button will launch my Scores app!");
+                Utils.showToast(this, getResources().getString(R.string.scores_toast));
                 break;
             case R.id.btnLibrary:
-                Utils.showToast(this, "This button will launch my Library app!");
+                Utils.showToast(this, getResources().getString(R.string.library_toast));
                 break;
             case R.id.btnBuild:
-                Utils.showToast(this, "This button will launch my Built it Bigger app!");
+                Utils.showToast(this, getResources().getString(R.string.build_toast));
                 break;
             case R.id.btnXyz:
-                Utils.showToast(this, "This button will launch my XZY app!");
+                Utils.showToast(this, getResources().getString(R.string.xyz_toast));
                 break;
             case R.id.btnCapstone:
-                Utils.showToast(this, "This button will launch my Capstone app!");
+                Utils.showToast(this, getResources().getString(R.string.capstone_toast));
                 break;
             default:
-                Utils.showToast(this, "Invalid selection! ");
+                Utils.showToast(this, getResources().getString(R.string.library_toast));
         }
     }
 }
