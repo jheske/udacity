@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity_movie_detail">Movie Details</string>
+    <string name="text_release_year">2015</string>
+    <string name="text_running_time">120min</string>
+    <string name="text_viewer_rating">7.2/10</string>
+    <string name="text_overview">This is a really great move, best you will ever see...</string>
+    <string name="label_mark_fav">Mark as Favorite</string>
+    <string name="label_trailers">Trailers:</string>
+    <string name="label_trailer">Trailer</string>
+</resources>
