@@ -25,11 +25,13 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.0'
     compile 'com.android.support:support-v4:22.2.0'
+    //Square Phrase library for making string.xml localization easier
+    compile 'com.squareup.phrase:phrase:1.1.0'
     //REST client for http interaction and dependencies
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    //Image downloading library
+    //Picasso Image downloading library
     compile 'com.squareup.picasso:picasso:2.4.0'
-    //JSON parsing
+    //GSON JSON parsing
     compile 'com.google.code.gson:gson:2.2.4'
     //A nice library containing backward compatible Preferences UI classes
     compile 'com.jenzz:materialpreference:1.3'

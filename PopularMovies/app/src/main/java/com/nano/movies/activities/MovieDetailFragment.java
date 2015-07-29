@@ -1,19 +1,22 @@
 package com.nano.movies.activities;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nano.movies.R;
 import com.nano.movies.web.MovieData;
-import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Tmdb;
-import com.nano.movies.web.TmdbResults;
+import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -28,12 +31,13 @@ import retrofit.client.Response;
 public class MovieDetailFragment extends Fragment {
     private final String TAG = "[MovieDetailFragment]";
 
-    private ImageView mImageView_Thumbnail;
-    private TextView mTextView_Title;
-    private TextView mTextView_ReleaseDate;
-    private TextView mTextView_Runtime;
-    private TextView mTextView_ViewerRating;
-    private TextView mTextView_Overview;
+    private ImageView mImageViewThumbnail;
+    private TextView mTextViewTitle;
+    private TextView mTextViewReleaseDate;
+    private TextView mTextViewRuntime;
+    private TextView mTextViewVoteAverage;
+    private TextView mTextViewOverview;
+    private Button mButtonFavorite;
     private MovieData mMovie;
     private Integer mMovieId;
     private final Tmdb tmdbManager = new Tmdb();
@@ -45,12 +49,13 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        mImageView_Thumbnail = (ImageView) rootView.findViewById(R.id.img_thumbnail);
-        mTextView_Title = (TextView) rootView.findViewById(R.id.tv_movie_title);
-        mTextView_ReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
-        mTextView_Runtime = (TextView) rootView.findViewById(R.id.tv_runtime);
-        mTextView_ViewerRating = (TextView) rootView.findViewById(R.id.tv_viewer_rating);
-        mTextView_Overview = (TextView) rootView.findViewById(R.id.tv_overview);
+        mImageViewThumbnail = (ImageView) rootView.findViewById(R.id.img_thumbnail);
+        mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
+        mTextViewReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
+        mTextViewRuntime = (TextView) rootView.findViewById(R.id.tv_runtime);
+        mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
+        mButtonFavorite = (Button) rootView.findViewById(R.id.btn_mark_fav);
+        mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
         return rootView;
     }
 
@@ -88,14 +93,20 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void displayMovieDetails() {
-        mTextView_Title.setText(mMovie.getOriginalTitle());
+        mTextViewTitle.setText(mMovie.getOriginalTitle());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        mTextView_ReleaseDate.setText(sdf.format(mMovie.getReleaseDate()));
-        mTextView_Runtime.setText(mMovie.getRuntime().toString());
-        mTextView_ViewerRating.setText(mMovie.getVoteAverage().toString());
-        mTextView_Overview.setText(mMovie.getOverview().toString());
+        mTextViewReleaseDate.setText(sdf.format(mMovie.getReleaseDate()));
+        CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
+                .put("runtime",mMovie.getRuntime().toString())
+                .format();
+        mTextViewRuntime.setText(runtime);
+        mTextViewVoteAverage.setText(mMovie.getVoteAverage().toString() + "/10");
+        mTextViewOverview.setText(mMovie.getOverview().toString());
+        Drawable drawable = mButtonFavorite.getBackground();
+        drawable.setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
+        //mButtonFavorite.
         Picasso.with(getActivity()).load(mMovie.getMovieUrl())
-                .into(mImageView_Thumbnail);
+                .into(mImageViewThumbnail);
 
     }
 
