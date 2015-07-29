@@ -1,12 +1,17 @@
 package com.nano.movies.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,7 +32,7 @@ import retrofit.client.Response;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MovieGridFragment extends Fragment implements MovieAdapter.ClickListener {
+public class MovieGridFragment extends Fragment {
     private final String TAG = "[MovieGridFragment]";
 
     RecyclerView mRvMovies;
@@ -55,18 +60,15 @@ public class MovieGridFragment extends Fragment implements MovieAdapter.ClickLis
         // Grid with 2 columns
         mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRvMovies.setLayoutManager(mLayoutManager);
-
         mMovieAdapter = new MovieAdapter(getActivity());
-        mMovieAdapter.setClickListener(this);
         mRvMovies.setAdapter(mMovieAdapter);
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        //tmdbManager.moviesServiceProxy().discoverMovies(1, "popularity.desc", resultsCallback);
         tmdbManager.setIsDebug(true);
-        tmdbManager.moviesServiceProxy().discoverMovies(1,"popularity.desc",new Callback<TmdbResults>() {
+        tmdbManager.moviesServiceProxy().discoverMovies(1,MovieServiceProxy.POPULARITY_DESC,new Callback<TmdbResults>() {
             @Override
             public void success(TmdbResults results, Response response) {
                 // here you do stuff with returned tasks
@@ -77,6 +79,7 @@ public class MovieGridFragment extends Fragment implements MovieAdapter.ClickLis
             @Override
             public void failure(RetrofitError error) {
                 // you should handle errors, too
+                Log.i(TAG, "discoverMovies Failed!");
             }
         });
         super.onActivityCreated(savedInstanceState);
@@ -84,11 +87,5 @@ public class MovieGridFragment extends Fragment implements MovieAdapter.ClickLis
 
     private void displayPosters(List<MovieData> movies) {
         mMovieAdapter.addAll(movies);
-    }
-
-    @Override
-    public void itemClicked(View view, int position) {
-        //Start MovieDetailActivity
-        Utils.showToast(getActivity(),"DetailActivity Click!!!");
     }
 }

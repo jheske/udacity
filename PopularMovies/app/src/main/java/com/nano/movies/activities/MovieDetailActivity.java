@@ -1,5 +1,7 @@
 package com.nano.movies.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,13 +9,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.nano.movies.R;
+import com.nano.movies.web.MovieData;
 
+//Sending Extras to Fragments
+//http://blog.petrnohejl.cz/handling-bundles-in-activities-and-fragments
+//
+//Get movie detail data
+//https://api.themoviedb.org/3/movie/550?api_key=***REMOVED***
 public class MovieDetailActivity extends AppCompatActivity {
+    public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        //Integer movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA,0);
+        MovieDetailFragment detailFragment = ((MovieDetailFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_movie_detail));
+        detailFragment.setMovieId(getIntent().getIntExtra(MOVIE_ID_EXTRA, 0));
     }
 
 

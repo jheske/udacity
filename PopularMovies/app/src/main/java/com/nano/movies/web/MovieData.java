@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * This "Plain Ol' Java Object" (POJO) class represents data of
  * interest downloaded in Json from the MovieServiceProxy.  We
@@ -33,6 +35,8 @@ public class MovieData implements Parcelable {
     public Double mPopularity;
     @SerializedName("poster_path")
     public String mPosterPath;
+    @SerializedName("release_date")
+    public Date mReleaseDate;
     @SerializedName("runtime")
     public Integer mRuntime;
     @SerializedName("tagline")
@@ -92,6 +96,14 @@ public class MovieData implements Parcelable {
         this.mPosterPath = mPosterPath;
     }
 
+    public Date getReleaseDate() {
+        return mReleaseDate;
+    }
+
+    public void setReleaseDate(Date mReleaseDate) {
+        this.mReleaseDate = mReleaseDate;
+    }
+
     public Integer getRuntime() {
         return mRuntime;
     }
@@ -147,12 +159,13 @@ public class MovieData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+            dest.writeInt(id);
         dest.writeString(mHomePage);
         dest.writeString(mOriginalTitle);
         dest.writeString(mOverview);
         dest.writeDouble(mPopularity);
         dest.writeString(mPosterPath);
+        dest.writeLong(mReleaseDate.getTime());
         dest.writeInt(mRuntime);
         dest.writeString(mTagline);
         dest.writeString(mTitle);
@@ -180,6 +193,7 @@ public class MovieData implements Parcelable {
         mOverview = in.readString();
         mPopularity = in.readDouble();
         mPosterPath = in.readString();
+        mReleaseDate = new Date(in.readLong());
         mRuntime = in.readInt();
         mTagline = in.readString();
         mTitle = in.readString();

@@ -17,14 +17,19 @@ import retrofit.http.Query;
  *
  */
 public interface MovieServiceProxy {
+    public final String POPULARITY_DESC = "popularity.desc";
+    public final String POPULARITY_ASC = "popularity.asc";
+
+
     /**
      * Get basic movie information for specific movie.
      *
      * @param tmdbId Tmdb-assigned Unique movie id
      */
     @GET("/movie/{id}")
-    MovieData summary(
-            @Path("id") int tmdbId
+    void summary(
+            @Path("id") int tmdbId,
+            Callback<MovieData> resultsCallback
     );
 
     /**

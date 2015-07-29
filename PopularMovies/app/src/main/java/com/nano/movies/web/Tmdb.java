@@ -1,7 +1,11 @@
 package com.nano.movies.web;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by jill on 7/25/2015.
@@ -20,7 +24,7 @@ public class Tmdb {
     public static final String PARAM_API_KEY = "api_key";
 
     private String apiKey = "***REMOVED***";
-    private boolean isDebug=true;
+    private boolean isDebug;
     private RestAdapter restAdapter;
 
     /**
@@ -67,9 +71,13 @@ public class Tmdb {
      * Create the RestAdapter
      */
     protected RestAdapter getRestAdapter() {
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd")
+                .create();
+
         if (restAdapter == null) {
             RestAdapter.Builder builder = restAdapterBuilder();
-
+            builder.setConverter(new GsonConverter(gson));
             builder.setEndpoint(MOVIE_SERVICE_URL);
             builder.setRequestInterceptor(new RequestInterceptor() {
                 // Add API_KEY to every API request
