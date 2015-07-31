@@ -1,8 +1,5 @@
 package com.nano.movies.activities;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nano.movies.R;
-import com.nano.movies.web.MovieData;
+import com.nano.movies.web.Movie;
+import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Tmdb;
 import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
@@ -38,7 +36,7 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewVoteAverage;
     private TextView mTextViewOverview;
     private Button mButtonFavorite;
-    private MovieData mMovie;
+    //private Movie mMovie;
     private Integer mMovieId;
     private final Tmdb tmdbManager = new Tmdb();
 
@@ -65,22 +63,32 @@ public class MovieDetailFragment extends Fragment {
         //Display details
         Log.d(TAG, "Movie id = " + mMovieId);
         super.onActivityCreated(savedInstanceState);
-        tmdbManager.setIsDebug(true);
-        tmdbManager.moviesServiceProxy().summary(mMovieId, new Callback<MovieData>() {
-            @Override
-            public void success(MovieData movie, Response response) {
-                // here you do stuff with returned tasks
-                mMovie = movie;
-                displayMovieDetails();
-                Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
-            }
+        //This should not be called until MovieGridFragment
+        //has finished downloading the movies and
+        //tells us which movie to display.  If initializing,
+        //then the first movie in the list.  Otherwise,
+        //whichever movie user selects.
+        //downloadMovieDetails();
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                // you should handle errors, too
-            }
-        });
+    public void downloadMovieDetails(Movie movie) {
+        tmdbManager.setIsDebug(false);
+        tmdbManager.moviesServiceProxy().summary(mMovieId,
+                MovieServiceProxy.TRAILERS,
+                new Callback<Movie>() {
+                    @Override
+                    public void success(Movie movie, Response response) {
+                        // here you do stuff with returned tasks
+                        //mMovie = movie;
+                        displayMovieDetails(movie);
+                        Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
+                    }
 
+                    @Override
+                    public void failure(RetrofitError error) {
+                        // you should handle errors, too
+                    }
+                });
     }
 
     /**
@@ -92,22 +100,18 @@ public class MovieDetailFragment extends Fragment {
         mMovieId = movieId;
     }
 
-    private void displayMovieDetails() {
-        mTextViewTitle.setText(mMovie.getOriginalTitle());
+    private void displayMovieDetails(Movie movie) {
+        mTextViewTitle.setText(movie.getOriginalTitle());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        mTextViewReleaseDate.setText(sdf.format(mMovie.getReleaseDate()));
+        mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
-                .put("runtime",mMovie.getRuntime().toString())
+                .put("runtime",movie.getRuntime().toString())
                 .format();
         mTextViewRuntime.setText(runtime);
-        mTextViewVoteAverage.setText(mMovie.getVoteAverage().toString() + "/10");
-        mTextViewOverview.setText(mMovie.getOverview().toString());
-        Drawable drawable = mButtonFavorite.getBackground();
-        drawable.setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
-        //mButtonFavorite.
-        Picasso.with(getActivity()).load(mMovie.getMovieUrl())
+        mTextViewVoteAverage.setText(movie.getVoteAverage().toString() + "/10");
+        mTextViewOverview.setText(movie.getOverview().toString());
+        Picasso.with(getActivity()).load(movie.getMovieUrl())
                 .into(mImageViewThumbnail);
-
     }
 
 }

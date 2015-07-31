@@ -1,15 +1,14 @@
 package com.nano.movies.activities;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.nano.movies.R;
-import com.nano.movies.web.MovieData;
+import com.nano.movies.data.MovieAdapter;
+import com.nano.movies.web.Tmdb;
 
 //Sending Extras to Fragments
 //http://blog.petrnohejl.cz/handling-bundles-in-activities-and-fragments
@@ -18,6 +17,16 @@ import com.nano.movies.web.MovieData;
 //https://api.themoviedb.org/3/movie/550?api_key=***REMOVED***
 public class MovieDetailActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
+
+    //Main grid-layout to hold movie posters
+    RecyclerView mRvMovies;
+    //Layout manager that determines format of list objects (grid vs linear)
+    RecyclerView.LayoutManager mLayoutManager;
+    //Adapter that retrieves objects from the model (list of Movie)
+    //and displays them in the RecyclerView
+    MovieAdapter mMovieAdapter;
+    //Used to access TheMovieDatabase's various services (movies, TV, etc).
+    private final Tmdb tmdbManager = new Tmdb();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

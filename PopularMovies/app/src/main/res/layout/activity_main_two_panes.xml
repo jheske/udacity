@@ -1,0 +1,31 @@
+<!--This layout will be called from
+    values-large-land/layouts.xml when app is run on a tablet
+    in landscape mode.
+    If the user rotates the tablet, then
+    values-large-port/layout.xml will be
+    load onepane.xml instead.
+
+    This layout is based on Android's News Reader Sample,
+    wrapped in a RelativeLayout to
+    android:name means the same thing as android:class -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_containers"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal" >
+
+    <fragment
+        android:id="@+id/fragment_movie_grid"
+        android:name="com.nano.movies.activities.MovieGridFragment"
+        android:layout_width="400dp"
+        android:layout_height="fill_parent"
+        android:layout_marginRight="10dp" />
+
+    <fragment
+        android:id="@+id/fragment_movie_detail"
+        android:name="com.nano.movies.activities.MovieDetailFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</LinearLayout>

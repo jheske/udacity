@@ -81,6 +81,7 @@ public class Tmdb {
             builder.setEndpoint(MOVIE_SERVICE_URL);
             builder.setRequestInterceptor(new RequestInterceptor() {
                 // Add API_KEY to every API request
+                // Always request releases and trailers
                 @Override
                 public void intercept(RequestInterceptor.RequestFacade requestFacade) {
                     requestFacade.addQueryParam(PARAM_API_KEY, apiKey);

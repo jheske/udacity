@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.nano.movies.R;
 import com.nano.movies.activities.MovieDetailActivity;
-import com.nano.movies.web.MovieData;
+import com.nano.movies.web.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,15 +23,15 @@ import java.util.List;
  * http://www.101apps.co.za/index.php/articles/android-recyclerview-and-picasso-tutorial.html
  * https://github.com/antoniolg/RecyclerViewExtensions/blob/4ce42029e1577de07f9cc38f420e1e9790f838d2/app/src/main/java/com/antonioleiva/recyclerviewextensions/example/MyRecyclerAdapter.java
  */
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private final String TAG="[MovieAdapter]";
-    private List<MovieData> mMovies;
+    private List<Movie> mMovies;
     private Context mContext;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder {
         public ImageView imgPoster;
 
-        public ViewHolder(View itemView) {
+        public MovieViewHolder(View itemView) {
             super(itemView);
             imgPoster = (ImageView) itemView.findViewById(R.id.img_poster);
         }
@@ -40,20 +40,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public MovieAdapter(Context context) {
         super();
         mContext = context;
-        mMovies = new ArrayList<MovieData>();
+        mMovies = new ArrayList<Movie>();
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.movie_grid_item, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        MovieViewHolder viewHolder = new MovieViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int i) {
-        MovieData movie = mMovies.get(holder.getAdapterPosition());
+    public void onBindViewHolder(final MovieViewHolder holder, int i) {
+        Movie movie = mMovies.get(holder.getAdapterPosition());
         Picasso.with(mContext).load(movie.getMovieUrl())
                 .into(holder.imgPoster);
         holder.imgPoster.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         });
     }
 
-    private void startDetailActivity(MovieData movie) {
+    private void startDetailActivity(Movie movie) {
         Log.d(TAG,"Viewing movie " + movie.getOriginalTitle() );
         Intent intent = new Intent(mContext,MovieDetailActivity.class);
         intent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, movie.getId());
@@ -78,18 +78,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mMovies.size();
     }
 
-    public void addAll(List<MovieData> movies) {
+    public void addAll(List<Movie> movies) {
         for (int position = 0; position < movies.size(); position++) {
             addItem(movies.get(position), position);
         }
     }
 
-    public void addItem(MovieData movie, int position) {
+    public void addItem(Movie movie, int position) {
         mMovies.add(position, movie);
         notifyItemInserted(position);
     }
 
-    public void remove(MovieData movie) {
+    public void remove(Movie movie) {
         int position = mMovies.indexOf(movie);
         mMovies.remove(position);
         notifyItemRemoved(position);

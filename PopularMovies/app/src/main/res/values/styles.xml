@@ -23,7 +23,6 @@
     <!-- Default style for this theme's buttons -->
     <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
         <item name="android:textSize">20sp</item>
-        <item name="colorButtonNormal">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class TmdbResults implements Serializable {
     public Integer page;
-    public List<MovieData> results;
+    public List<Movie> results;
     public Integer total_pages;
     public Integer total_results;
 }

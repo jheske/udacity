@@ -1,9 +1,5 @@
 package com.nano.movies.web;
 
-import android.support.v7.util.SortedList;
-
-import java.util.List;
-
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -19,6 +15,10 @@ import retrofit.http.Query;
 public interface MovieServiceProxy {
     public final String POPULARITY_DESC = "popularity.desc";
     public final String POPULARITY_ASC = "popularity.asc";
+    public static final String PARAM_APPEND = "append_to_response";
+    public static final String RELEASES = "releases";
+    public static final String TRAILERS = "trailers";
+    public static final String RELEASES_AND_TRAILERS = "releases,trailers";
 
 
     /**
@@ -29,7 +29,19 @@ public interface MovieServiceProxy {
     @GET("/movie/{id}")
     void summary(
             @Path("id") int tmdbId,
-            Callback<MovieData> resultsCallback
+            Callback<Movie> resultsCallback
+    );
+
+    /**
+     * Get basic movie information for specific movie.
+     *
+     * @param tmdbId Tmdb-assigned Unique movie id
+     */
+    @GET("/movie/{id}")
+    void summary(
+            @Path("id") int tmdbId,
+            @Query("append_to_response") String appendToResponse,
+            Callback<Movie> resultsCallback
     );
 
     /**
@@ -39,7 +51,7 @@ public interface MovieServiceProxy {
      * @param language optional language code
      */
     @GET("/movie/{id}")
-    MovieData summary(
+    Movie summary(
             @Path("id") int tmdbId,
             @Query("language") String language
     );

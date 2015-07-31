@@ -1,12 +1,13 @@
 package com.nano.movies.web;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This "Plain Ol' Java Object" (POJO) class represents data of
@@ -14,7 +15,7 @@ import java.util.Date;
  * don't care about all the data, just the fields defined in this
  * class.
  */
-public class MovieData implements Parcelable {
+public class Movie implements Parcelable {
     /*
      * These fields store the Tmdb's state.
      * Typically we would use
@@ -47,7 +48,17 @@ public class MovieData implements Parcelable {
     public Double mVoteAverage;
     @SerializedName("vote_count")
     public Integer mVoteCount;
+    // Used with append_to_response=trailers
+    public Trailers mTrailers;
 
+    public Movie(String originalTitle) {
+        mOriginalTitle = originalTitle;
+    }
+
+    /**
+     * Getters and Setters
+     *
+     */
     public Integer getId() {
         return id;
     }
@@ -148,18 +159,9 @@ public class MovieData implements Parcelable {
         return ("http://image.tmdb.org/t/p/w185/" + mPosterPath);
     }
 
-    /**
-     * A bitmask indicating the set of special object types marshaled
-     * by the Parcelable.
-     */
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(id);
+        dest.writeInt(id);
         dest.writeString(mHomePage);
         dest.writeString(mOriginalTitle);
         dest.writeString(mOverview);
@@ -171,10 +173,7 @@ public class MovieData implements Parcelable {
         dest.writeString(mTitle);
         dest.writeDouble(mVoteAverage);
         dest.writeInt(mVoteCount);
-    }
-
-    public MovieData(String originalTitle) {
-        mOriginalTitle = originalTitle;
+        dest.writeParcelable(mTrailers, flags);
     }
 
     /**
@@ -184,9 +183,12 @@ public class MovieData implements Parcelable {
      * The order of reading in variables HAS TO MATCH the order in
      * writeToParcel(Parcel, int)
      *
+     * NOTE Use getClassLoader to load mTrailers, which parses itself in
+     * the Trailers class.
+     *
      * @param in
      */
-    private MovieData(Parcel in) {
+    private Movie(Parcel in) {
         id = in.readInt();
         mHomePage = in.readString();
         mOriginalTitle = in.readString();
@@ -199,6 +201,16 @@ public class MovieData implements Parcelable {
         mTitle = in.readString();
         mVoteAverage = in.readDouble();
         mVoteCount = in.readInt();
+        mTrailers = Trailers.CREATOR.createFromParcel(in);
+    }
+
+    /**
+     * A bitmask indicating the set of special object types marshaled
+     * by the Parcelable.
+     */
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     /**
@@ -207,14 +219,14 @@ public class MovieData implements Parcelable {
      * CREATOR field that generates instances of your Parcelable class
      * from a Parcel.
      */
-    public static final Parcelable.Creator<MovieData> CREATOR =
-            new Parcelable.Creator<MovieData>() {
-                public MovieData createFromParcel(Parcel in) {
-                    return new MovieData(in);
+    public static final Parcelable.Creator<Movie> CREATOR =
+            new Parcelable.Creator<Movie>() {
+                public Movie createFromParcel(Parcel in) {
+                    return new Movie(in);
                 }
 
-                public MovieData[] newArray(int size) {
-                    return new MovieData[size];
+                public Movie[] newArray(int size) {
+                    return new Movie[size];
                 }
             };
 }
