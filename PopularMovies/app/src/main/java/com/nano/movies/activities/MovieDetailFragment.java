@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nano.movies.R;
+import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Tmdb;
@@ -36,11 +37,13 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewVoteAverage;
     private TextView mTextViewOverview;
     private Button mButtonFavorite;
+    private int mMovieId;
     //private Movie mMovie;
-    private Integer mMovieId;
     private final Tmdb tmdbManager = new Tmdb();
 
+
     public MovieDetailFragment() {
+        setRetainInstance(true);
     }
 
     @Override
@@ -57,47 +60,32 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        //Call proxy to download the movie
-        //Display details
-        Log.d(TAG, "Movie id = " + mMovieId);
-        super.onActivityCreated(savedInstanceState);
-        //This should not be called until MovieGridFragment
-        //has finished downloading the movies and
-        //tells us which movie to display.  If initializing,
-        //then the first movie in the list.  Otherwise,
-        //whichever movie user selects.
-        //downloadMovieDetails();
-    }
-
-    public void downloadMovieDetails(Movie movie) {
+    /**
+     * Called by MainActivity if Fragment already exists (two-pane mode),
+     * or when the Fragment is created by its own separate activity
+     * (MovieDetailActivity), in single-pane mode.
+     *
+     * @param
+     */
+    public void downloadMovie(int movieId) {
+        //Member var so it's available in callback for error handling
+        mMovieId = movieId;
         tmdbManager.setIsDebug(false);
-        tmdbManager.moviesServiceProxy().summary(mMovieId,
+        tmdbManager.moviesServiceProxy().summary(movieId,
                 MovieServiceProxy.TRAILERS,
                 new Callback<Movie>() {
                     @Override
                     public void success(Movie movie, Response response) {
-                        // here you do stuff with returned tasks
-                        //mMovie = movie;
                         displayMovieDetails(movie);
                         Log.i(TAG, "Success!! Movie title = " + movie.getOriginalTitle());
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        // you should handle errors, too
+                        // Handle errors here.
+                        Utils.showToast(getActivity(),"Failed to download movie " + mMovieId);
                     }
                 });
-    }
-
-    /**
-     * Called by calling Activity to set the movie's id
-     *
-     * @param movieId
-     */
-    public void setMovieId(Integer movieId) {
-        mMovieId = movieId;
     }
 
     private void displayMovieDetails(Movie movie) {
@@ -105,7 +93,7 @@ public class MovieDetailFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
         mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
-                .put("runtime",movie.getRuntime().toString())
+                .put("runtime", movie.getRuntime().toString())
                 .format();
         mTextViewRuntime.setText(runtime);
         mTextViewVoteAverage.setText(movie.getVoteAverage().toString() + "/10");

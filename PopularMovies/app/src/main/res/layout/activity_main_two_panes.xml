@@ -20,12 +20,11 @@
         android:id="@+id/fragment_movie_grid"
         android:name="com.nano.movies.activities.MovieGridFragment"
         android:layout_width="400dp"
-        android:layout_height="fill_parent"
-        android:layout_marginRight="10dp" />
+        android:layout_height="match_parent"/>
 
     <fragment
         android:id="@+id/fragment_movie_detail"
         android:name="com.nano.movies.activities.MovieDetailFragment"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

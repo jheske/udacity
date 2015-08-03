@@ -32,10 +32,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        //Integer movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA,0);
+        int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         MovieDetailFragment detailFragment = ((MovieDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_movie_detail));
-        detailFragment.setMovieId(getIntent().getIntExtra(MOVIE_ID_EXTRA, 0));
+        detailFragment.downloadMovie(movieId);
     }
 
 

@@ -56,14 +56,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Movie movie = mMovies.get(holder.getAdapterPosition());
         Picasso.with(mContext).load(movie.getMovieUrl())
                 .into(holder.imgPoster);
-        holder.imgPoster.setOnClickListener(new View.OnClickListener() {
+       /* holder.imgPoster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //WOULD BE BETTER TO CREATE A CALLBACK INTO THE Fragment SO
-                //IT COULD START THE NEW ACTIVITY
                 startDetailActivity(mMovies.get(holder.getAdapterPosition()));
             }
-        });
+        }); */
     }
 
     private void startDetailActivity(Movie movie) {
@@ -76,6 +74,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         return mMovies.size();
+    }
+
+    public Movie getItemAtPosition(int position) {
+       return mMovies.get(position);
     }
 
     public void addAll(List<Movie> movies) {
@@ -94,5 +96,4 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         mMovies.remove(position);
         notifyItemRemoved(position);
     }
-
 }
