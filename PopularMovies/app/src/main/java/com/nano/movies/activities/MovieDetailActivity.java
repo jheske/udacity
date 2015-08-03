@@ -14,7 +14,7 @@ import com.nano.movies.web.Tmdb;
 //http://blog.petrnohejl.cz/handling-bundles-in-activities-and-fragments
 //
 //Get movie detail data
-//https://api.themoviedb.org/3/movie/550?api_key=***REMOVED***
+//https://api.themoviedb.org/3/movie/550?api_key=xxx
 public class MovieDetailActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
 

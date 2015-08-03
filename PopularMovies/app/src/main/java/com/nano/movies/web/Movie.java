@@ -155,10 +155,6 @@ public class Movie implements Parcelable {
         this.mVoteCount = mVoteCount;
     }
 
-    public String getMovieUrl() {
-        return ("http://image.tmdb.org/t/p/w185/" + mPosterPath);
-    }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);

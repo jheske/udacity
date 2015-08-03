@@ -27,8 +27,23 @@ public class Tmdb {
     private boolean isDebug;
     private RestAdapter restAdapter;
 
+
     /**
-     * Create a new manager instance.
+     * A few image size constants selected from
+     * https://api.themoviedb.org/3/configuration?api_key=xxx
+     * They're kind of arbitrary,
+     * but I don't know how else to pick them.
+     * Put them here vs MovieServiceProxy in case
+     * other service might need them.
+     */
+    public final String IMAGE_POSTER_ORIGINAL = "original";
+    public static final String IMAGE_POSTER_SMALL = "w185";
+    public static final String IMAGE_POSTER_MED = "w342";
+    public final String IMAGE_POSTER_LARGE = "w500";
+    public final String IMAGE_POSTER_XLARGE = "w780";
+
+    /**
+     * Constructor to create a new manager instance.
      */
     public Tmdb() {
     }
@@ -45,6 +60,10 @@ public class Tmdb {
         this.apiKey = value;
         restAdapter = null;
         return this;
+    }
+
+    public static String getMovieImageUrl(String mImagePath, String imageSize) {
+        return ("http://image.tmdb.org/t/p/" + imageSize + "/" + mImagePath);
     }
 
     /**

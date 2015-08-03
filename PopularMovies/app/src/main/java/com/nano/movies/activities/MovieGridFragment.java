@@ -188,8 +188,6 @@ public class MovieGridFragment extends Fragment {
          */
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            Log.d(TAG, "onInterceptTouchEvent " + mGestureDetector.onTouchEvent(e));
-
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && mClickListener != null && mGestureDetector.onTouchEvent(e)) {
                 mClickListener.onClick(child, rv.getChildAdapterPosition(child));

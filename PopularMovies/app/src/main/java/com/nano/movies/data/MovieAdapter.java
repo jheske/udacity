@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.nano.movies.R;
 import com.nano.movies.activities.MovieDetailActivity;
 import com.nano.movies.web.Movie;
+import com.nano.movies.web.Tmdb;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -54,7 +55,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int i) {
         Movie movie = mMovies.get(holder.getAdapterPosition());
-        Picasso.with(mContext).load(movie.getMovieUrl())
+        String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
+                Tmdb.IMAGE_POSTER_MED);
+        Picasso.with(mContext).load(movieImageUrl)
                 .into(holder.imgPoster);
        /* holder.imgPoster.setOnClickListener(new View.OnClickListener() {
             @Override

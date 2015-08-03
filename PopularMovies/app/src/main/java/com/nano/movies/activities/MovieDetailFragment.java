@@ -98,7 +98,9 @@ public class MovieDetailFragment extends Fragment {
         mTextViewRuntime.setText(runtime);
         mTextViewVoteAverage.setText(movie.getVoteAverage().toString() + "/10");
         mTextViewOverview.setText(movie.getOverview().toString());
-        Picasso.with(getActivity()).load(movie.getMovieUrl())
+        String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
+                Tmdb.IMAGE_POSTER_SMALL);
+        Picasso.with(getActivity()).load(movieImageUrl)
                 .into(mImageViewThumbnail);
     }
 

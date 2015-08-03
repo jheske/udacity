@@ -20,7 +20,6 @@ public interface MovieServiceProxy {
     public static final String TRAILERS = "trailers";
     public static final String RELEASES_AND_TRAILERS = "releases,trailers";
 
-
     /**
      * Get basic movie information for specific movie.
      *
