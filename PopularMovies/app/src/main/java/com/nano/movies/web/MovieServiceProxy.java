@@ -9,12 +9,13 @@ import retrofit.http.Query;
  * Retrofit Service to send requests to TheMovieDatabase (Tmdb) web service and
  * convert the Json response to POJO class.
  *
- * For now put everything in here I think I'll need for P1 and P2
+ * For now put everything in here I think I might need for P1, P2, etc.
  *
  */
 public interface MovieServiceProxy {
     public final String POPULARITY_DESC = "popularity.desc";
-    public final String POPULARITY_ASC = "popularity.asc";
+    public final String VOTE_AVERAGE_DESC = "vote_average.desc";
+    //For later use
     public static final String PARAM_APPEND = "append_to_response";
     public static final String RELEASES = "releases";
     public static final String TRAILERS = "trailers";

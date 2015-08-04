@@ -2,6 +2,8 @@ package com.nano.movies.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.nano.movies.R;
 import com.nano.movies.data.MovieAdapter;
@@ -34,7 +35,7 @@ public class MovieGridFragment extends Fragment {
     private final String TAG = "[MovieGridFragment]";
 
     //Main view for holding movie posters
-    RecyclerView mRvMovies;
+    RecyclerView mRecyclerView;
 
     //Layout for RecyclerView items (linear or grid)
     RecyclerView.LayoutManager mLayoutManager;
@@ -49,6 +50,21 @@ public class MovieGridFragment extends Fragment {
     //Manages communication between activities and themoviedb.org service proxies
     private final Tmdb tmdbManager = new Tmdb();
 
+    /**
+     * State vars that must survive a config change.
+     */
+    Parcelable mLayoutManagerSavedState;
+    int mLastPosition=0;
+    String mSortBy=MovieServiceProxy.POPULARITY_DESC;
+
+    /**
+     * Keys for storing/retrieving state on config change.
+     */
+    private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
+    private final String BUNDLE_LAST_POSITION = "SaveLastPosition";
+    private final String BUNDLE_SORT_BY = "SaveSortBy";
+
+
     // Android recommends Fragments always communicate with each other
     // via the container Activity
     // @see https://developer.android.com/training/basics/fragments/communicating.html
@@ -57,7 +73,7 @@ public class MovieGridFragment extends Fragment {
     // show the full-sized image.
     // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
     public interface MovieSelectionListener {
-        public void onMovieSelected(int movieId,boolean isUserSelected);
+        public void onMovieSelected(int movieId, boolean isUserSelected);
     }
 
     MovieSelectionListener mCallback = null;
@@ -75,43 +91,94 @@ public class MovieGridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-
-
-        mRvMovies = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mRvMovies.setHasFixedSize(true);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
         // Grid with 2 columns
         mLayoutManager = new GridLayoutManager(getActivity(), 2);
-        mRvMovies.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mMovieAdapter = new MovieAdapter(getActivity());
-        mRvMovies.setAdapter(mMovieAdapter);
-        mRvMovies.addOnItemTouchListener(new RecyclerTouchListener(getActivity(),
-                mRvMovies, new ClickListener() {
+        mRecyclerView.setAdapter(mMovieAdapter);
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(),
+                mRecyclerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Movie movie = mMovieAdapter.getItemAtPosition(position);
                 //Call back to MainActivity to handle the click event
                 //True = Movie selected by user
-                mCallback.onMovieSelected(movie.getId(),true);
+                mLastPosition = position;
+                mCallback.onMovieSelected(movie.getId(), true);
             }
         }));
-        //FIGURE OUT HOW TO GET THE RV ITEM CLICKS TO CALLBACK TO ACTIVITY
-        /*mRvMovies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long pos) {
-                Movie selfie = mMovieAdapter.getItem((int) pos);
-                //mListener.onListSelection(selfie.getPathToCapturedImage()); */
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        downloadMovies();
         super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
+            mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
+        }
+        downloadMovies();
     }
 
-    private void downloadMovies() {
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(BUNDLE_SORT_BY, mSortBy);
+        outState.putInt(BUNDLE_LAST_POSITION, mLastPosition);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT,
+                mRecyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    /**
+     *
+     * The state was saved on the most recent config change.
+     * Don't restore it quite yet.  Wait til the next downloadMovies
+     * to finish up and redisplay all the most recent movies,
+     * then scroll the RecyclerView back to its pre-config position.
+     *
+     */
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+/**
+        if (savedInstanceState != null) {
+            mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
+            mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
+        } **/
+    }
+
+
+    /**
+     *
+     * If this is called after a recent config change,
+     * mLayoutManagerSavedState will hold pre-config state,
+     * including the most recently viewed movie position
+     * and the LayoutManager's state.
+     *
+     * Retrieve that information and reinitialize the
+     * saved states.
+     */
+    private void restoreLayoutManagerPosition() {
+        if (mLayoutManagerSavedState != null) {
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
+        }
+        else {
+            mLastPosition = 0;
+            mLayoutManagerSavedState = null;
+        }
+    }
+
+    public void downloadMovies() {
         tmdbManager.setIsDebug(false);
-        tmdbManager.moviesServiceProxy().discoverMovies(1, MovieServiceProxy.POPULARITY_DESC, new Callback<TmdbResults>() {
+        tmdbManager.moviesServiceProxy().discoverMovies(1, mSortBy, new Callback<TmdbResults>() {
             @Override
             public void success(TmdbResults results, Response response) {
                 // here you do stuff with returned tasks
@@ -119,8 +186,11 @@ public class MovieGridFragment extends Fragment {
                 //Tell main activity it can display the first movie in the list
                 //if MovieDetailFragment exists (two-pane mode).
                 //False = Movie not selected by user
-                Movie movie = mMovieAdapter.getItemAtPosition(0);
-                mCallback.onMovieSelected(movie.getId(),false);
+                restoreLayoutManagerPosition();
+                Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
+                mCallback.onMovieSelected(movie.getId(), false);
+                //Movie movie = mMovieAdapter.getItemAtPosition(0);
+                //mCallback.onMovieSelected(movie.getId(), false);
             }
 
             @Override
@@ -146,9 +216,13 @@ public class MovieGridFragment extends Fragment {
     }
 
     private void displayPosters(List<Movie> movies) {
+        mMovieAdapter.clear();
         mMovieAdapter.addAll(movies);
     }
 
+    public void setSortBy(String sortBy) {
+        mSortBy = sortBy;
+    }
 
     /**
      * Set up interface to handle onClick

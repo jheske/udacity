@@ -3,6 +3,7 @@ package com.nano.movies.activities;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,20 +29,35 @@ public class MovieDetailActivity extends AppCompatActivity {
     //Used to access TheMovieDatabase's various services (movies, TV, etc).
     private final Tmdb tmdbManager = new Tmdb();
 
+    private Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        setupToolbar();;
+        setupDetailFragment();
+    }
+
+    private void setupToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setupDetailFragment() {
         int movieId = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         MovieDetailFragment detailFragment = ((MovieDetailFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_movie_detail));
         detailFragment.downloadMovie(movieId);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
         return true;
     }

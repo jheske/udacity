@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="sort_by_array">
+        <item>@string/option_most_popular</item>
+        <item>@string/option_highest_rated</item>
+    </string-array>
+</resources>

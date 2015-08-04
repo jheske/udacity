@@ -25,7 +25,7 @@ import java.util.List;
  * https://github.com/antoniolg/RecyclerViewExtensions/blob/4ce42029e1577de07f9cc38f420e1e9790f838d2/app/src/main/java/com/antonioleiva/recyclerviewextensions/example/MyRecyclerAdapter.java
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private final String TAG="[MovieAdapter]";
+    private final String TAG = "[MovieAdapter]";
     private List<Movie> mMovies;
     private Context mContext;
 
@@ -59,19 +59,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 Tmdb.IMAGE_POSTER_MED);
         Picasso.with(mContext).load(movieImageUrl)
                 .into(holder.imgPoster);
-       /* holder.imgPoster.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDetailActivity(mMovies.get(holder.getAdapterPosition()));
-            }
-        }); */
-    }
-
-    private void startDetailActivity(Movie movie) {
-        Log.d(TAG,"Viewing movie " + movie.getOriginalTitle() );
-        Intent intent = new Intent(mContext,MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, movie.getId());
-        mContext.startActivity(intent);
     }
 
     @Override
@@ -80,7 +67,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public Movie getItemAtPosition(int position) {
-       return mMovies.get(position);
+        return mMovies.get(position);
     }
 
     public void addAll(List<Movie> movies) {
@@ -94,9 +81,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyItemInserted(position);
     }
 
-    public void remove(Movie movie) {
-        int position = mMovies.indexOf(movie);
-        mMovies.remove(position);
-        notifyItemRemoved(position);
+    /**
+     * Clear all the movies from the RecyclerView,
+     * usually in preparation for re-downloading
+     * the list with different sort critera.
+     */
+    public void clear() {
+        int size = mMovies.size();
+        if (size <= 0)
+            return;
+        for (int i = 0; i < size; i++)
+            mMovies.remove(0);
+        notifyItemRangeRemoved(0, size);
     }
 }

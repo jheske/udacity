@@ -6,17 +6,25 @@ package com.nano.movies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.nano.movies.R;
-import com.nano.movies.data.MovieAdapter;
+import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
+import com.nano.movies.web.MovieServiceProxy;
 
 /**
- * Multi-pane Layout
+ * Multi-pane Layout:
  * The app is designed to adapt the layout to the device, specifically a
  * phone, or a tablet either in portrait or landscape mode.
  * Phones and tablets in portrait mode will use a one-pane layout,
@@ -27,7 +35,7 @@ import com.nano.movies.web.Movie;
  * Layout.xml will direct Android to the correct one-pane or two-pane layout
  * in the res/layouts directory.
  * <p/>
- * Organization
+ * Organization:
  * MainActivity contains 2 Fragments:
  * MovieGridFragment handles the
  * Main UI maintains the list of
@@ -56,13 +64,24 @@ public class MainActivity extends AppCompatActivity
     private MovieGridFragment mMovieGridFragment;
     private MovieDetailFragment mMovieDetailFragment;
     private boolean mIsTwoPane = false;
+    /**
+     * Custom Material toolbar
+     */
+    protected Toolbar mToolbar;
 
     /**
+     * Android will load either
+     * activity_main_one_pane.xml
+     * or  activity_main_two_pane.xml
+     * depending on which version of layout_main
+     * it loads.
+     * <p/>
      * layout_main is defined in 3 different
      * versions of layouts.xml:
      * values/layouts.xml
      * values-large-port/layouts.xml
      * values-large-land/layouts.xml
+     * <p/>
      * Android decides which one to load
      * depending on device size.
      *
@@ -73,33 +92,20 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.layout_main);
+        setupToolbar();
         setupFragments();
-        // This determines whether to load details into the
-        // details fragment, which exists already in two-pane mode,
-        // or to launch a separate Activity to view details
+        setupSpinner();
         mIsTwoPane = checkForDualPane();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    /**
+     * Replace default toolbar with custom toolbar defined
+     * in layouts/app_bar.xml
+     */
+    private void setupToolbar() {
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void setupFragments() {
@@ -112,9 +118,59 @@ public class MainActivity extends AppCompatActivity
                 R.id.fragment_movie_detail);
     }
 
-    // Determine whether we are in single-pane or dual-pane mode by testing the visibility
-    // of the selfie_image_fragment view.
+    private void setupSpinner() {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner_sort_by);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_by_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        SpinnerInteractionListener listener = new SpinnerInteractionListener();
+        spinner.setOnTouchListener(listener);
+        spinner.setOnItemSelectedListener(listener);
+    }
+
+    public class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+        boolean isUserSelected = false;
+
+        /**
+         * This prevents the Spinner from firing unless the
+         * user tape the screen to make a selection.  Otherwise
+         * it fires itself automatically on initialization, annoying!!
+         */
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            isUserSelected = true;
+            return false;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent,
+                                   View view, int position, long id) {
+            if (isUserSelected) {
+                String sortBy = (String) parent.getItemAtPosition(position);
+                if (sortBy.equals(getString(R.string.option_most_popular)))
+                    mMovieGridFragment.setSortBy(MovieServiceProxy.POPULARITY_DESC);
+                else
+                    mMovieGridFragment.setSortBy(MovieServiceProxy.VOTE_AVERAGE_DESC);
+                mMovieGridFragment.downloadMovies();
+                isUserSelected = false;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
+    }
+
+    /**
+     * This determines whether to load details into the
+     * details fragment, which exists already in two-pane mode,
+     * or to launch a separate Activity to view details.
+     *
+     * @return
+     */
     private boolean checkForDualPane() {
+        // has_two_panes is defined in values/layouts.xml
         if (getResources().getBoolean(R.bool.has_two_panes)) {
             Log.i(TAG, "Two-pane layout");
             return true;
@@ -124,12 +180,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void onMovieSelected(int movieId,boolean isUserSelected) {
+    public void onMovieSelected(int movieId, boolean isUserSelected) {
         if (mIsTwoPane) {
             mMovieDetailFragment.downloadMovie(movieId);
         } else {
             if (isUserSelected)
-              startMovieDetailActivity(movieId);
+                startMovieDetailActivity(movieId);
         }
     }
 
