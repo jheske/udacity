@@ -2,6 +2,7 @@ package com.nano.movies.web;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nano.movies.utils.ApiKey;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -22,8 +23,6 @@ public class Tmdb {
      * This has to be appended to every request.
      */
     private static final String PARAM_API_KEY = "api_key";
-
-    private String apiKey = "***REMOVED***";
     private boolean isDebug;
     private RestAdapter restAdapter;
 
@@ -47,20 +46,6 @@ public class Tmdb {
      * Constructor to create a new manager instance.
      */
     public Tmdb() {
-    }
-
-    /**
-     * Set the TMDB API key.
-     * <p>
-     * The next service method call will trigger a rebuild of the {@link retrofit.RestAdapter}. If you have cached any
-     * service instances, get a new one from its service method.
-     *
-     * @param value Your TMDB API key.
-     */
-    public Tmdb setApiKey(String value) {
-        this.apiKey = value;
-        restAdapter = null;
-        return this;
     }
 
     public static String getMovieImageUrl(String mImagePath, String imageSize) {
@@ -101,9 +86,17 @@ public class Tmdb {
             builder.setRequestInterceptor(new RequestInterceptor() {
                 // Add API_KEY to every API request
                 // Always request releases and trailers
+
+                /**********
+                 *
+                 *  My ApiKey Class is in .gitignore so it is
+                 *  excluded from   my repo.
+                 *  REPLACE ApiKey.getApiKey() WITH YOUR OWN KEY
+                 *
+                 */
                 @Override
                 public void intercept(RequestInterceptor.RequestFacade requestFacade) {
-                    requestFacade.addQueryParam(PARAM_API_KEY, apiKey);
+                    requestFacade.addQueryParam(PARAM_API_KEY, ApiKey.getApiKey());
                 }
             });
             if (isDebug) {
