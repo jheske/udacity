@@ -91,7 +91,7 @@ public class Tmdb {
                  *
                  *  My ApiKey Class is in .gitignore so it is
                  *  excluded from   my repo.
-                 *  REPLACE ApiKey.getApiKey() WITH YOUR OWN KEY
+                 *  REPLACE ApiKey.getApiKey() WITH YOUR OWN KEY STRING
                  *
                  */
                 @Override
