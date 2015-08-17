@@ -5,9 +5,7 @@
     android:id="@+id/review_trailer_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/tv_overview"
-    android:layout_marginLeft="@dimen/margin_20"
-    android:layout_marginStart="@dimen/margin_20">
+    android:layout_below="@+id/tv_overview">
     <TextView
         android:id="@+id/lab_trailers"
         android:layout_alignParentTop="true"

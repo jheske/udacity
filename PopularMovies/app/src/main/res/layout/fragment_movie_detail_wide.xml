@@ -106,7 +106,9 @@
                 android:id="@+id/reviews_and_trailers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_40">
+                android:layout_marginTop="@dimen/margin_40"
+                android:layout_marginLeft="@dimen/margin_20"
+                android:layout_marginRight="@dimen/margin_20">
             </include>
         </RelativeLayout>
     </ScrollView>

@@ -83,9 +83,9 @@ public class MovieDetailFragment extends Fragment {
     public void downloadMovie(int movieId) {
         //Member var so it's available in callback for error handling
         mMovieId = movieId;
-        tmdbManager.setIsDebug(false);
+        tmdbManager.setIsDebug(true);
         tmdbManager.moviesServiceProxy().summary(movieId,
-                MovieServiceProxy.TRAILERS,
+                MovieServiceProxy.REVIEWS_AND_TRAILERS,
                 new Callback<Movie>() {
                     @Override
                     public void success(Movie movie, Response response) {
