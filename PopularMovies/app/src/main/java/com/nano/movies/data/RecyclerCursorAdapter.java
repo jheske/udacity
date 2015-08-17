@@ -9,7 +9,7 @@ import android.view.ViewGroup;
  */
 public class RecyclerCursorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    Cursor dataCursor;
+    private Cursor dataCursor;
 
     @Override
     public int getItemCount() {
@@ -24,7 +24,7 @@ public class RecyclerCursorAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    public Cursor swapCursor(Cursor cursor) {
+    private Cursor swapCursor(Cursor cursor) {
         if (dataCursor == cursor) {
             return null;
         }

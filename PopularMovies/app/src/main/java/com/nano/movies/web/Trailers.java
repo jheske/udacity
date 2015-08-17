@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class Trailers implements Parcelable {
     @SerializedName("id")
-    public Integer id;
+    private Integer id;
     @SerializedName("quicktime")
-    public List<Trailer> mQuicktime = new ArrayList<Trailer>();
+    private List<Trailer> mQuicktime = new ArrayList<>();
     @SerializedName("youtube")
-    public List<Trailer> mYoutube = new ArrayList<Trailer>();
+    private List<Trailer> mYoutube = new ArrayList<>();
 
     public Integer getId() {
         return id;

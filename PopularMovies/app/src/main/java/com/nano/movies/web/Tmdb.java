@@ -15,13 +15,13 @@ public class Tmdb {
     /**
      * Tmdb API URL.
      */
-    public static final String MOVIE_SERVICE_URL = "https://api.themoviedb.org/3";
+    private static final String MOVIE_SERVICE_URL = "https://api.themoviedb.org/3";
 
     /**
      * API key query parameter name.
      * This has to be appended to every request.
      */
-    public static final String PARAM_API_KEY = "api_key";
+    private static final String PARAM_API_KEY = "api_key";
 
     private String apiKey = "***REMOVED***";
     private boolean isDebug;
@@ -37,6 +37,7 @@ public class Tmdb {
      * other service might need them.
      */
     public final String IMAGE_POSTER_ORIGINAL = "original";
+    public static final String IMAGE_POSTER_XSMALL = "w92";
     public static final String IMAGE_POSTER_SMALL = "w185";
     public static final String IMAGE_POSTER_MED = "w342";
     public final String IMAGE_POSTER_LARGE = "w500";
@@ -71,25 +72,24 @@ public class Tmdb {
      *
      * @param isDebug true = LogLevel set to FULL
      */
-    public Tmdb setIsDebug(boolean isDebug) {
+    public void setIsDebug(boolean isDebug) {
         this.isDebug = isDebug;
         if (restAdapter != null) {
             restAdapter.setLogLevel(isDebug ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE);
         }
-        return this;
     }
 
     /**
      * Create a RestAdapterBuilder to help build the adapter
      */
-    protected RestAdapter.Builder restAdapterBuilder() {
+    private RestAdapter.Builder restAdapterBuilder() {
         return new RestAdapter.Builder();
     }
 
     /**
      * Create the RestAdapter
      */
-    protected RestAdapter getRestAdapter() {
+    private RestAdapter getRestAdapter() {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd")
                 .create();

@@ -1,6 +1,7 @@
 package com.nano.movies.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,23 +20,11 @@ import com.nano.movies.web.Tmdb;
 public class MovieDetailActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE ID EXTRA";
 
-    //Main grid-layout to hold movie posters
-    RecyclerView mRvMovies;
-    //Layout manager that determines format of list objects (grid vs linear)
-    RecyclerView.LayoutManager mLayoutManager;
-    //Adapter that retrieves objects from the model (list of Movie)
-    //and displays them in the RecyclerView
-    MovieAdapter mMovieAdapter;
-    //Used to access TheMovieDatabase's various services (movies, TV, etc).
-    private final Tmdb tmdbManager = new Tmdb();
-
-    private Toolbar mToolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        setupToolbar();;
+        setupToolbar();
         setupDetailFragment();
     }
 
@@ -69,11 +58,16 @@ public class MovieDetailActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //@TODO add settings in P2
         if (id == R.id.action_settings) {
             return true;
         }
-
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

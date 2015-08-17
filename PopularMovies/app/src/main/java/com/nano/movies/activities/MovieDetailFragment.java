@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.nano.movies.R;
@@ -19,6 +20,7 @@ import com.squareup.phrase.Phrase;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -34,11 +36,12 @@ public class MovieDetailFragment extends Fragment {
     private TextView mTextViewTitle;
     private TextView mTextViewReleaseDate;
     private TextView mTextViewRuntime;
-    private TextView mTextViewVoteAverage;
     private TextView mTextViewOverview;
+    private RatingBar mRatingVoteAverage;
+
+    //Will be hooked up in P2
     private Button mButtonFavorite;
     private int mMovieId;
-    //private Movie mMovie;
     private final Tmdb tmdbManager = new Tmdb();
 
 
@@ -46,6 +49,16 @@ public class MovieDetailFragment extends Fragment {
         setRetainInstance(true);
     }
 
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     *
+     * @TODO Hook up Favorite button
+     *
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,7 +67,7 @@ public class MovieDetailFragment extends Fragment {
         mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_movie_title);
         mTextViewReleaseDate = (TextView) rootView.findViewById(R.id.tv_release_date);
         mTextViewRuntime = (TextView) rootView.findViewById(R.id.tv_runtime);
-        mTextViewVoteAverage = (TextView) rootView.findViewById(R.id.tv_vote_average);
+        mRatingVoteAverage = (RatingBar) rootView.findViewById(R.id.rating_bar_vote_average);
         mButtonFavorite = (Button) rootView.findViewById(R.id.btn_mark_fav);
         mTextViewOverview = (TextView) rootView.findViewById(R.id.tv_overview);
         return rootView;
@@ -90,14 +103,14 @@ public class MovieDetailFragment extends Fragment {
 
     private void displayMovieDetails(Movie movie) {
         mTextViewTitle.setText(movie.getOriginalTitle());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.ENGLISH);
         mTextViewReleaseDate.setText(sdf.format(movie.getReleaseDate()));
         CharSequence runtime = Phrase.from(getActivity(), R.string.text_runtime)
                 .put("runtime", movie.getRuntime().toString())
                 .format();
         mTextViewRuntime.setText(runtime);
-        mTextViewVoteAverage.setText(movie.getVoteAverage().toString() + "/10");
-        mTextViewOverview.setText(movie.getOverview().toString());
+        mRatingVoteAverage.setRating(movie.getVoteAverage().floatValue());
+        mTextViewOverview.setText(movie.getOverview());
         String movieImageUrl = Tmdb.getMovieImageUrl(movie.getPosterPath(),
                 Tmdb.IMAGE_POSTER_SMALL);
         Picasso.with(getActivity()).load(movieImageUrl)

@@ -6,12 +6,9 @@ package com.nano.movies.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,8 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.nano.movies.R;
-import com.nano.movies.utils.Utils;
-import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 
 /**
@@ -55,8 +50,8 @@ import com.nano.movies.web.MovieServiceProxy;
  * as MovieGridFragment, so it is not used at all on a phone or on a
  * tablet in portrait mode.  In that case, we use MovieDetailActivity
  * to load its fragment show the details on a separate screen instead.
+ * @see [http://stackoverflow.com/questions/30487700/recyclerview-onitemclicked-callback]
  */
-//http://stackoverflow.com/questions/30487700/recyclerview-onitemclicked-callback
 public class MainActivity extends AppCompatActivity
         implements MovieGridFragment.MovieSelectionListener {
     private final String TAG = getClass().getSimpleName();
@@ -64,10 +59,6 @@ public class MainActivity extends AppCompatActivity
     private MovieGridFragment mMovieGridFragment;
     private MovieDetailFragment mMovieDetailFragment;
     private boolean mIsTwoPane = false;
-    /**
-     * Custom Material toolbar
-     */
-    protected Toolbar mToolbar;
 
     /**
      * Android will load either
@@ -103,15 +94,15 @@ public class MainActivity extends AppCompatActivity
      * in layouts/app_bar.xml
      */
     private void setupToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void setupFragments() {
         // Retrieve Fragments
         // If we happen to be in a one-pane layout, mMovieDetailFragment
-        // isn't in the layout and will be null.
+        // will not be in the layout and will be null.
         mMovieGridFragment = (MovieGridFragment) getSupportFragmentManager().findFragmentById(
                 R.id.fragment_movie_grid);
         mMovieDetailFragment = (MovieDetailFragment) getSupportFragmentManager().findFragmentById(
@@ -134,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
         /**
          * This prevents the Spinner from firing unless the
-         * user tape the screen to make a selection.  Otherwise
+         * user taps the screen to make a selection.  Otherwise
          * it fires itself automatically on initialization, annoying!!
          */
         @Override
@@ -163,11 +154,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * This determines whether to load details into the
-     * details fragment, which exists already in two-pane mode,
-     * or to launch a separate Activity to view details.
-     *
-     * @return
+     * Determine whether we are in two-pane mode, based
+     * on layouts.xml-defined boolean value.
      */
     private boolean checkForDualPane() {
         // has_two_panes is defined in values/layouts.xml
@@ -180,6 +168,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * De
+     * @param movieId
+     * @param isUserSelected
+     */
     public void onMovieSelected(int movieId, boolean isUserSelected) {
         if (mIsTwoPane) {
             mMovieDetailFragment.downloadMovie(movieId);

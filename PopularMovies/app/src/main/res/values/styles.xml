@@ -18,17 +18,12 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
         <item name="android:textColorHint">@color/textColorHint</item>
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <!-- Default style for this theme's buttons -->
     <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
         <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="MoviesToolbarTheme" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="android:textColorPrimary">@color/toolbarTextColorPrimary</item>
-        <item name="android:textColorSecondary">@color/toolbarTextColorSecondary</item>
-        <item name="android:textColorHint">@color/toolbarTextColorHint</item>
     </style>
 
 </resources>

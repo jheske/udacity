@@ -1,7 +1,16 @@
+/**
+ * Created by Jill E Heske on 2015-07-29.
+ * <p/>
+ * AutofitRecyclerAdapter courtesy of Square Island
+ * blog.sqisland.com
+ * <p/>
+ * Copyright(c) 2015.
+ */
 package com.nano.movies.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +26,7 @@ import android.view.ViewGroup;
 
 import com.nano.movies.R;
 import com.nano.movies.data.MovieAdapter;
+import com.nano.movies.utils.Utils;
 import com.nano.movies.web.Movie;
 import com.nano.movies.web.MovieServiceProxy;
 import com.nano.movies.web.Tmdb;
@@ -34,18 +44,17 @@ import retrofit.client.Response;
 public class MovieGridFragment extends Fragment {
     private final String TAG = "[MovieGridFragment]";
 
+    private Context mActivityContext;
+
     //Main view for holding movie posters
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
     //Layout for RecyclerView items (linear or grid)
-    RecyclerView.LayoutManager mLayoutManager;
+    //RecyclerView.LayoutManager mLayoutManager;
 
     //RecyclerView's adapter that automatically displays movie list
     //updates views on additions and deletions to list
-    MovieAdapter mMovieAdapter;
-
-    //List of movies downloaded from themoviedb.org
-    List<Movie> mMovies;
+    private MovieAdapter mMovieAdapter;
 
     //Manages communication between activities and themoviedb.org service proxies
     private final Tmdb tmdbManager = new Tmdb();
@@ -53,9 +62,9 @@ public class MovieGridFragment extends Fragment {
     /**
      * State vars that must survive a config change.
      */
-    Parcelable mLayoutManagerSavedState;
-    int mLastPosition=0;
-    String mSortBy=MovieServiceProxy.POPULARITY_DESC;
+    private Parcelable mLayoutManagerSavedState;
+    private int mLastPosition = 0;
+    private String mSortBy = MovieServiceProxy.POPULARITY_DESC;
 
     /**
      * Keys for storing/retrieving state on config change.
@@ -63,7 +72,6 @@ public class MovieGridFragment extends Fragment {
     private final String BUNDLE_RECYCLER_LAYOUT = "SaveLayoutState";
     private final String BUNDLE_LAST_POSITION = "SaveLastPosition";
     private final String BUNDLE_SORT_BY = "SaveSortBy";
-
 
     // Android recommends Fragments always communicate with each other
     // via the container Activity
@@ -73,10 +81,10 @@ public class MovieGridFragment extends Fragment {
     // show the full-sized image.
     // DON'T FORGET TO DESTROY IT WHEN IN onDetach() OR IT WILL LEAK MEMORY
     public interface MovieSelectionListener {
-        public void onMovieSelected(int movieId, boolean isUserSelected);
+        void onMovieSelected(int movieId, boolean isUserSelected);
     }
 
-    MovieSelectionListener mCallback = null;
+    private MovieSelectionListener mCallback = null;
 
     public MovieGridFragment() {
     }
@@ -85,18 +93,24 @@ public class MovieGridFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mActivityContext = getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
         // Grid with 2 columns
-        mLayoutManager = new GridLayoutManager(getActivity(), 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mMovieAdapter = new MovieAdapter(getActivity());
+        mMovieAdapter = new MovieAdapter(mActivityContext);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        //Show two columns or three, depending device orientation.
+        if (getActivity().getResources()
+                .getConfiguration()
+                .orientation == Configuration.ORIENTATION_PORTRAIT)
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mActivityContext, 2));
+        else
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mActivityContext, 3));
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mMovieAdapter);
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(),
                 mRecyclerView, new ClickListener() {
@@ -104,7 +118,7 @@ public class MovieGridFragment extends Fragment {
             public void onClick(View view, int position) {
                 Movie movie = mMovieAdapter.getItemAtPosition(position);
                 //Call back to MainActivity to handle the click event
-                //True = Movie selected by user
+                //true = Movie selected by user
                 mLastPosition = position;
                 mCallback.onMovieSelected(movie.getId(), true);
             }
@@ -137,27 +151,6 @@ public class MovieGridFragment extends Fragment {
 
     /**
      *
-     * The state was saved on the most recent config change.
-     * Don't restore it quite yet.  Wait til the next downloadMovies
-     * to finish up and redisplay all the most recent movies,
-     * then scroll the RecyclerView back to its pre-config position.
-     *
-     */
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-/**
-        if (savedInstanceState != null) {
-            mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-            mSortBy = savedInstanceState.getString(BUNDLE_SORT_BY);
-            mLastPosition = savedInstanceState.getInt(BUNDLE_LAST_POSITION);
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-        } **/
-    }
-
-
-    /**
-     *
      * If this is called after a recent config change,
      * mLayoutManagerSavedState will hold pre-config state,
      * including the most recently viewed movie position
@@ -169,8 +162,7 @@ public class MovieGridFragment extends Fragment {
     private void restoreLayoutManagerPosition() {
         if (mLayoutManagerSavedState != null) {
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mLayoutManagerSavedState);
-        }
-        else {
+        } else {
             mLastPosition = 0;
             mLayoutManagerSavedState = null;
         }
@@ -189,14 +181,15 @@ public class MovieGridFragment extends Fragment {
                 restoreLayoutManagerPosition();
                 Movie movie = mMovieAdapter.getItemAtPosition(mLastPosition);
                 mCallback.onMovieSelected(movie.getId(), false);
-                //Movie movie = mMovieAdapter.getItemAtPosition(0);
-                //mCallback.onMovieSelected(movie.getId(), false);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 // Handle errors here
-                Log.i(TAG, "discoverMovies Failed!");
+                String errorMsg = getResources()
+                        .getString(R.string.error_download_movies_failed);
+                Utils.showToast(getActivity(), errorMsg);
+                Log.i(TAG, errorMsg);
             }
         });
     }
@@ -211,7 +204,7 @@ public class MovieGridFragment extends Fragment {
             mCallback = (MovieSelectionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement MovieSelectionListener");
+                    + getResources().getString(R.string.error_implement_method) + " MovieSelectionListener");
         }
     }
 
@@ -222,6 +215,7 @@ public class MovieGridFragment extends Fragment {
 
     public void setSortBy(String sortBy) {
         mSortBy = sortBy;
+        mLastPosition = 0;
     }
 
     /**
@@ -229,8 +223,8 @@ public class MovieGridFragment extends Fragment {
      * This could also handle have methods to handle
      * onLongPress, or other gestures.
      */
-    public static interface ClickListener {
-        public void onClick(View view, int position);
+    public interface ClickListener {
+         void onClick(View view, int position);
     }
 
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {

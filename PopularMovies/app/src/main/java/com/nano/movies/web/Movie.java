@@ -5,9 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * This "Plain Ol' Java Object" (POJO) class represents data of
@@ -17,7 +15,7 @@ import java.util.List;
  */
 public class Movie implements Parcelable {
     /*
-     * These fields store the Tmdb's state.
+     * These fields store the Tmdb state.
      * Typically we would use
      * the @SerializedName annotation to make an explicit mapping
      * between each member variable and its Json name, as in.
@@ -25,31 +23,31 @@ public class Movie implements Parcelable {
      * names we won't need to use this annotation.
      */
     @SerializedName("id")
-    public Integer id;
+    private Integer id;
     @SerializedName("homepage")
-    public String mHomePage;
+    private String mHomePage;
     @SerializedName("original_title")
-    public String mOriginalTitle;
+    private String mOriginalTitle;
     @SerializedName("overview")
-    public String mOverview;
+    private String mOverview;
     @SerializedName("popularity")
-    public Double mPopularity;
+    private Double mPopularity;
     @SerializedName("poster_path")
-    public String mPosterPath;
+    private String mPosterPath;
     @SerializedName("release_date")
-    public Date mReleaseDate;
+    private Date mReleaseDate;
     @SerializedName("runtime")
-    public Integer mRuntime;
+    private Integer mRuntime;
     @SerializedName("tagline")
-    public String mTagline;
+    private String mTagline;
     @SerializedName("title")
-    public String mTitle;
+    private String mTitle;
     @SerializedName("vote_average")
-    public Double mVoteAverage;
+    private Double mVoteAverage;
     @SerializedName("vote_count")
-    public Integer mVoteCount;
+    private Integer mVoteCount;
     // Used with append_to_response=trailers
-    public Trailers mTrailers;
+    private Trailers mTrailers;
 
     public Movie(String originalTitle) {
         mOriginalTitle = originalTitle;
