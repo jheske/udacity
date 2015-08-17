@@ -34,11 +34,11 @@ Note that all of my projects are stored in this repo, so you will have to clone 
 
 In order to compile and run the app, you will need to acquire a valid api key from www.themoviedb.org.  In tmdb.java replace the line:
 
-                    `requestFacade.addQueryParam(PARAM_API_KEY, ApiKey.getApiKey());`
+`requestFacade.addQueryParam(PARAM_API_KEY, ApiKey.getApiKey());`
 
 with
 
-                    `requestFacade.addQueryParam(PARAM_API_KEY, "your api key");`
+`requestFacade.addQueryParam(PARAM_API_KEY, "your api key");`
 
 
 ## Contributors
